@@ -11,21 +11,22 @@ namespace UDP
     {
         private const int listenPort = 11000;
         public static UdpClient listener { get; set; }
-        public static IPEndPoint groupEP { get; set; }
+        public static IPEndPoint serverIP { get; set; }
         public static bool messageReceived = false;
         public static RoutedItemList RoutedItemList;
 
         public static void Start()
         {
             RoutedItemList = new RoutedItemList();
-            groupEP = getEndPoint();
+            serverIP = getServerIpAddress();
 
+            IPEndPoint gEP = new IPEndPoint(IPAddress.Any, listenPort);
             listener = new UdpClient(listenPort);
 
             try
             {
                 Console.WriteLine("Waiting for message");
-                listener.BeginReceive(new AsyncCallback(ReceiveCallback), groupEP);
+                listener.BeginReceive(new AsyncCallback(ReceiveCallback), serverIP);
             }
             catch (Exception e)
             {
@@ -36,7 +37,7 @@ namespace UDP
         public static void ReceiveCallback(IAsyncResult ar)
         {
             try {
-                var EP = getEndPoint();
+                var EP = getServerIpAddress();
                 Byte[] receiveBytes = listener.EndReceive(ar, ref EP);
                 string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
@@ -46,7 +47,7 @@ namespace UDP
                 }
 
                 Console.WriteLine("Received: {0}", receiveString);
-                listener.BeginReceive(new AsyncCallback(ReceiveCallback), groupEP);
+                listener.BeginReceive(new AsyncCallback(ReceiveCallback), serverIP);
             }
             catch (ObjectDisposedException e)
             {
@@ -54,7 +55,7 @@ namespace UDP
             }
         }
 
-        private static IPEndPoint getEndPoint()
+        private static IPEndPoint getServerIpAddress()
         {
             IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];

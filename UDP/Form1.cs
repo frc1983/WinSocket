@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using UDP.Model;
+using System.Net;
 
 namespace UDP
 {
@@ -30,7 +31,11 @@ namespace UDP
                     for (var i = 0; i < Listener.RoutedItemList.clientList.Count; i++)
                     {
                         Thread.Sleep(1000);
-                        Sender.Send(Listener.Serialize(Listener.RoutedItemList.clientList), Listener.groupEP);
+                        Sender.Send(Listener.Serialize(Listener.RoutedItemList.clientList),
+                            new IPEndPoint(
+                                IPAddress.Parse(Listener.RoutedItemList.clientList.ElementAt(i).Ip.ToString()),
+                                11000)
+                        );
                     }
                 }
             }
@@ -45,7 +50,7 @@ namespace UDP
                 backgroundWorker1.RunWorkerAsync();
                 isRunning = true;
             }
-            lblServerIP.Text = Listener.groupEP.Address.ToString() + " - Port: " + Listener.groupEP.Port.ToString();
+            lblServerIP.Text = Listener.serverIP.Address.ToString() + " - Port: " + Listener.serverIP.Port.ToString();
         }
 
         private void btnKill_Click(object sender, EventArgs e)
