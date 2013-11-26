@@ -51,6 +51,7 @@ namespace UDP
                 isRunning = true;
             }
             lblServerIP.Text = Listener.serverIP.Address.ToString() + " - Port: " + Listener.serverIP.Port.ToString();
+            Listener.RoutedItemList.AddClient(Listener.serverIP.Address.ToString(), -1, Listener.serverIP.Address.ToString());
         }
 
         private void btnKill_Click(object sender, EventArgs e)

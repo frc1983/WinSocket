@@ -20,8 +20,8 @@ namespace UDP.Model
             RoutedItem item = new RoutedItem(ip, metric, output);
 
             //Se o ip nao esta na lista, adiciona com a métrica que chega + 1
-            if (!IPAddress.Parse(ip).Equals(Listener.serverIP.Address))
-            {
+            //if (!IPAddress.Parse(ip).Equals(Listener.serverIP.Address))
+            //{
                 if (!clientList.Any(x => x.Ip.Equals(item.Ip)))
                 {
                     item.Metric = item.Metric + 1;
@@ -39,7 +39,7 @@ namespace UDP.Model
                         itemInList.Metric = item.Metric;
                     }
                 }
-            }
+            //}
         }
 
         public RoutedItem getClient(Int32 index)
