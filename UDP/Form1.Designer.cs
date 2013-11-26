@@ -39,10 +39,10 @@
             this.btnAddClient = new System.Windows.Forms.Button();
             this.lblServerIP = new System.Windows.Forms.Label();
             this.dtgClientes = new System.Windows.Forms.DataGridView();
+            this.routedItemListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Destino = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Metrica = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Saida = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.routedItemListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dtgClientes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.routedItemListBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -142,6 +142,10 @@
             this.dtgClientes.Size = new System.Drawing.Size(511, 268);
             this.dtgClientes.TabIndex = 8;
             // 
+            // routedItemListBindingSource
+            // 
+            this.routedItemListBindingSource.DataSource = typeof(UDP.Model.RoutedItemList);
+            // 
             // Destino
             // 
             this.Destino.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -165,14 +169,11 @@
             // Saida
             // 
             this.Saida.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Saida.DataPropertyName = "Output";
             this.Saida.HeaderText = "Saída";
             this.Saida.Name = "Saida";
             this.Saida.ReadOnly = true;
             this.Saida.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // routedItemListBindingSource
-            // 
-            this.routedItemListBindingSource.DataSource = typeof(UDP.Model.RoutedItemList);
             // 
             // Form1
             // 

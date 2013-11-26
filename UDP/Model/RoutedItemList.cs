@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace UDP.Model
@@ -14,15 +15,30 @@ namespace UDP.Model
             clientList = new List<RoutedItem>();
         }
 
-        public void AddClient(string ip, Int32 metric)
+        public void AddClient(String ip, Int32 metric, String output)
         {
-            var item = new RoutedItem(ip, metric);
+            RoutedItem item = new RoutedItem(ip, metric, output);
 
-            if (!clientList.Any(x => x.Ip.Equals(item.Ip)))
-                clientList.Add(item);
-            else if (clientList.Any(x => x.Ip.Equals(item.Ip)))
+            //Se o ip nao esta na lista, adiciona com a métrica que chega + 1
+            if (!IPAddress.Parse(ip).Equals(Listener.serverIP.Address))
             {
-                //Existe o IP na tabel, entao confere a metrica e usa a menor
+                if (!clientList.Any(x => x.Ip.Equals(item.Ip)))
+                {
+                    item.Metric = item.Metric + 1;
+                    clientList.Add(item);
+                }
+                else if (clientList.Any(x => x.Ip.Equals(item.Ip)))
+                {
+                    //Existe o IP na tabela, entao confere a metrica e usa a menor
+                    RoutedItem itemInList = clientList.Where(x => x.Ip.Equals(item.Ip)).FirstOrDefault();
+
+                    //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
+                    //e ver de quem recebeu IP
+                    if (!item.Ip.Equals(itemInList.Output) && item.Metric < itemInList.Metric)
+                    {
+                        itemInList.Metric = item.Metric;
+                    }
+                }
             }
         }
 

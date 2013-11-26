@@ -69,7 +69,7 @@ namespace UDP
         {
             if (!string.IsNullOrEmpty(txtClientIP.Text))
             {
-                Listener.RoutedItemList.AddClient(txtClientIP.Text, 1);
+                Listener.RoutedItemList.AddClient(txtClientIP.Text, 0, txtClientIP.Text);
             }
 
             var bs = new BindingSource();

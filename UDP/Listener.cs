@@ -43,7 +43,7 @@ namespace UDP
 
                 var receivedList = Deserialize(receiveString);
                 foreach(RoutedItem item in receivedList){
-                    RoutedItemList.AddClient(item.Ip.ToString(), item.Metric);
+                    RoutedItemList.AddClient(item.Ip.ToString(), item.Metric, item.Output.ToString());
                 }
 
                 Console.WriteLine("Received: {0}", receiveString);
@@ -77,6 +77,8 @@ namespace UDP
                 sb.Append(item.Ip.ToString());
                 sb.Append("#");
                 sb.Append(item.Metric.ToString());
+                sb.Append("!");
+                sb.Append(Listener.serverIP.Address.ToString());
             }
 
             return sb.ToString();
@@ -90,7 +92,8 @@ namespace UDP
                 if (!string.IsNullOrEmpty(routed))
                 {
                     var col = routed.Split('#');
-                    newList.Add(new RoutedItem(col[0].ToString(), Convert.ToInt32(col[1])));
+                    var col1 = col[1].Split('!');
+                    newList.Add(new RoutedItem(col[0].ToString(), Convert.ToInt32(col1[0]), col1[1].ToString()));
                 }
             }
 
