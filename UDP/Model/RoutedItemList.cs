@@ -22,9 +22,10 @@ namespace UDP.Model
             //Se o ip nao esta na lista, adiciona com a métrica que chega + 1
             //if (!IPAddress.Parse(ip).Equals(Listener.serverIP.Address))
             //{
-                item.Metric = item.Metric + 1;
+                
                 if (!clientList.Any(x => x.Ip.Equals(item.Ip)))
-                {                    
+                {
+                    item.Metric = item.Metric + 1;
                     clientList.Add(item);
                 }
                 else if (clientList.Any(x => x.Ip.Equals(item.Ip)))
@@ -34,9 +35,9 @@ namespace UDP.Model
 
                     //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
                     //e ver de quem recebeu IP
-                    if (!item.Ip.Equals(itemInList.Output) && item.Metric < itemInList.Metric)
+                    if (!item.Ip.Equals(itemInList.Output) && item.Metric + 1 < itemInList.Metric)
                     {
-                        itemInList.Metric = item.Metric;
+                        itemInList.Metric = item.Metric + 1;
                     }
                     else if (!item.Ip.Equals(itemInList.Output) && item.Metric.Equals(-1))
                     {
