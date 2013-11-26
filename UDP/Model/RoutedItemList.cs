@@ -35,7 +35,7 @@ namespace UDP.Model
 
                     //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
                     //e ver de quem recebeu IP
-                    if (!item.Ip.Equals(itemInList.Output) && item.Metric + 1 < itemInList.Metric)
+                    if (!item.Ip.Equals(itemInList.Output) && item.Metric + 1 < itemInList.Metric && !item.Ip.Equals(item.Output))
                     {
                         itemInList.Metric = item.Metric + 1;
                         itemInList.Output = item.Ip;
