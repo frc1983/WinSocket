@@ -38,10 +38,15 @@ namespace UDP.Model
                     if (!item.Ip.Equals(itemInList.Output) && item.Metric + 1 < itemInList.Metric)
                     {
                         itemInList.Metric = item.Metric + 1;
+                        itemInList.Output = item.Output;
                     }
-                    else if (!item.Ip.Equals(itemInList.Output) && item.Metric.Equals(-1))
+                    else if (item.Metric.Equals(-1))
                     {
                         itemInList.Metric = -1;
+                    }
+                    else if (item.Ip.Equals(itemInList.Output) && item.Metric.Equals(-1))
+                    {
+                        itemInList.Metric = item.Metric;
                     }
                 }
             //}
