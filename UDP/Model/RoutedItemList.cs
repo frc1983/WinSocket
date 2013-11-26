@@ -38,15 +38,15 @@ namespace UDP.Model
                     if (!item.Ip.Equals(itemInList.Output) && item.Metric + 1 < itemInList.Metric)
                     {
                         itemInList.Metric = item.Metric + 1;
-                        itemInList.Output = item.Output;
-                    }
-                    else if (item.Metric.Equals(-1))
+                        itemInList.Output = item.Ip;
+                    }                    
+                    else if (!item.Ip.Equals(itemInList.Output) && item.Metric.Equals(Int32.MaxValue))
                     {
-                        itemInList.Metric = -1;
+                        itemInList.Metric = Int32.MaxValue;
                     }
-                    else if (item.Ip.Equals(itemInList.Output) && item.Metric.Equals(-1))
+                    else if (item.Metric.Equals(Int32.MaxValue))
                     {
-                        itemInList.Metric = item.Metric;
+                        itemInList.Metric = Int32.MaxValue;
                     }
                 }
             //}
@@ -55,7 +55,7 @@ namespace UDP.Model
         public void DisconnectServer(String ip)
         {
             RoutedItem item = clientList.Where(x => x.Ip.Equals(IPAddress.Parse(ip))).FirstOrDefault();
-            item.Metric = -1;
+            item.Metric = Int16.MaxValue;
         }
         
         internal void RestartServer(String ip)
