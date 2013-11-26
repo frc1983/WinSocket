@@ -34,7 +34,8 @@ namespace UDP
                         Sender.Send(Listener.Serialize(Listener.RoutedItemList.clientList),
                             new IPEndPoint(
                                 IPAddress.Parse(Listener.RoutedItemList.clientList.ElementAt(i).Ip.ToString()),
-                                11000)
+                                11000),
+                                Listener.RoutedItemList.clientList.ElementAt(i).Metric
                         );
                     }
                 }
@@ -56,14 +57,15 @@ namespace UDP
 
         private void btnKill_Click(object sender, EventArgs e)
         {
-            isRunning = false;
+            //isRunning = false;
             Listener.Close();
-            backgroundWorker1.Dispose(); 
+            //backgroundWorker1.Dispose(); 
         }
 
         private void btnRestartServer_Click(object sender, EventArgs e)
         {
-            startServer();
+            //startServer();
+            Listener.Restart();
         }
 
         private void btnAddClient_Click(object sender, EventArgs e)

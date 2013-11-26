@@ -11,7 +11,7 @@ namespace UDP
 {
     class Sender
     {
-        public static void Send(string args, IPEndPoint endPoint, bool done = false)
+        public static void Send(string args, IPEndPoint endPoint, Int32 metric = 0)
         {
             Boolean exception_thrown = false;
             Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -22,7 +22,8 @@ namespace UDP
             Console.WriteLine("sending to address: {0} port: {1}", endPoint.Address, endPoint.Port);
             try
             {
-                sending_socket.SendTo(send_buffer, endPoint);
+                //if(!metric.Equals(-1))
+                    sending_socket.SendTo(send_buffer, endPoint);
             }
             catch (Exception send_exception)
             {

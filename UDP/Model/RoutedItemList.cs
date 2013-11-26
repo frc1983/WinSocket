@@ -22,9 +22,9 @@ namespace UDP.Model
             //Se o ip nao esta na lista, adiciona com a métrica que chega + 1
             //if (!IPAddress.Parse(ip).Equals(Listener.serverIP.Address))
             //{
+                item.Metric = item.Metric + 1;
                 if (!clientList.Any(x => x.Ip.Equals(item.Ip)))
-                {
-                    item.Metric = item.Metric + 1;
+                {                    
                     clientList.Add(item);
                 }
                 else if (clientList.Any(x => x.Ip.Equals(item.Ip)))
@@ -38,13 +38,24 @@ namespace UDP.Model
                     {
                         itemInList.Metric = item.Metric;
                     }
+                    else if (!item.Ip.Equals(itemInList.Output) && item.Metric.Equals(-1))
+                    {
+                        itemInList.Metric = -1;
+                    }
                 }
             //}
         }
 
-        public RoutedItem getClient(Int32 index)
+        public void DisconnectServer(String ip)
         {
-            return clientList.ElementAt(index);
+            RoutedItem item = clientList.Where(x => x.Ip.Equals(IPAddress.Parse(ip))).FirstOrDefault();
+            item.Metric = -1;
+        }
+        
+        internal void RestartServer(String ip)
+        {
+            RoutedItem item = clientList.Where(x => x.Ip.Equals(IPAddress.Parse(ip))).FirstOrDefault();
+            item.Metric = 0;
         }
     }
 }

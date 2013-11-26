@@ -65,7 +65,8 @@ namespace UDP
         }
 
         public static void Close(){
-            listener.Close();
+            RoutedItemList.DisconnectServer(Listener.serverIP.Address.ToString());
+            //listener.Close();
         }
 
         internal static string Serialize(List<RoutedItem> list)
@@ -98,6 +99,11 @@ namespace UDP
             }
 
             return newList;
+        }
+
+        internal static void Restart()
+        {
+            RoutedItemList.RestartServer(Listener.serverIP.Address.ToString());
         }
     }
 }
