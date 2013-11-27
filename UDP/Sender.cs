@@ -22,8 +22,7 @@ namespace UDP
             Console.WriteLine("sending to address: {0} port: {1}", endPoint.Address, endPoint.Port);
             try
             {
-                //if(!metric.Equals(-1))
-                    sending_socket.SendTo(send_buffer, endPoint);
+                sending_socket.SendTo(send_buffer, endPoint);
             }
             catch (Exception send_exception)
             {
