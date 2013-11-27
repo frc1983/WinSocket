@@ -8,13 +8,13 @@ namespace UDP.Model
 {
     public class RoutedItem
     {
-        public IPAddress Ip { get; set; }
+        public IPAddress IpToSend { get; set; }
         public Int32 Metric { get; set; }
         public IPAddress Output { get; set; }
 
-        public RoutedItem(String ip, Int32 metric, String output) 
+        public RoutedItem(String ipToSend, Int32 metric, String output) 
         {
-            Ip = IPAddress.Parse(ip);
+            IpToSend = IPAddress.Parse(ipToSend);
             Metric = metric;
             Output = IPAddress.Parse(output);
         }

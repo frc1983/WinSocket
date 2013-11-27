@@ -19,10 +19,15 @@ namespace UDP
             string text_to_send = args;
             byte[] send_buffer = Encoding.ASCII.GetBytes(text_to_send);
 
-            Console.WriteLine("sending to address: {0} port: {1}", endPoint.Address, endPoint.Port);
+            
             try
             {
-                sending_socket.SendTo(send_buffer, endPoint);
+                if (!IPAddress.Equals(endPoint.Address, Listener.serverIP.Address) &&
+                    Listener.RoutedItemList.neighboring.Any(x => IPAddress.Equals(endPoint.Address, x)))
+                {
+                    Console.WriteLine("sending to address: {0} port: {1}", endPoint.Address, endPoint.Port);
+                    sending_socket.SendTo(send_buffer, endPoint);
+                }
             }
             catch (Exception send_exception)
             {

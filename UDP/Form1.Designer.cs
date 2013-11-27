@@ -149,7 +149,7 @@
             // Destino
             // 
             this.Destino.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Destino.DataPropertyName = "Ip";
+            this.Destino.DataPropertyName = "IpToSend";
             this.Destino.FillWeight = 50.74626F;
             this.Destino.HeaderText = "Destino";
             this.Destino.Name = "Destino";

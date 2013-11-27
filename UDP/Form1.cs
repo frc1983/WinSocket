@@ -33,13 +33,21 @@ namespace UDP
                         Thread.Sleep(1000);
                         Sender.Send(Listener.Serialize(Listener.RoutedItemList.clientList),
                             new IPEndPoint(
-                                IPAddress.Parse(Listener.RoutedItemList.clientList.ElementAt(i).Ip.ToString()),
+                                IPAddress.Parse(Listener.RoutedItemList.clientList.ElementAt(i).IpToSend.ToString()),
                                 11000),
                                 Listener.RoutedItemList.clientList.ElementAt(i).Metric
                         );
                     }
+                    BeginInvoke(new Action(() => refreshGrid()));
                 }
             }
+        }
+
+        private void refreshGrid()
+        {
+            var bs = new BindingSource();
+            bs.DataSource = Listener.RoutedItemList.clientList;
+            dtgClientes.DataSource = bs;
         }
 
         private void startServer()
@@ -73,11 +81,8 @@ namespace UDP
             if (!string.IsNullOrEmpty(txtClientIP.Text))
             {
                 Listener.RoutedItemList.AddClient(txtClientIP.Text, 0, txtClientIP.Text);
+                Listener.RoutedItemList.AddNeighbor(txtClientIP.Text);
             }
-
-            var bs = new BindingSource();
-            bs.DataSource = Listener.RoutedItemList.clientList;
-            dtgClientes.DataSource = bs;
         }
     }
 }

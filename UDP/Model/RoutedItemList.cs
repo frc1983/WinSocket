@@ -9,55 +9,64 @@ namespace UDP.Model
     public class RoutedItemList
     {
         public List<RoutedItem> clientList;
+        public List<IPAddress> neighboring
+;
 
         public RoutedItemList()
         {
             clientList = new List<RoutedItem>();
+            neighboring = new List<IPAddress>();
         }
 
-        public void AddClient(String ip, Int32 metric, String output)
+        public void AddNeighbor(String ip)
         {
-            RoutedItem item = new RoutedItem(ip, metric, output);
+            if (!neighboring.Any(x => x.Equals(IPAddress.Parse(ip))))
+            {
+                neighboring.Add(IPAddress.Parse(ip));
+            }
+        }
+
+        public void AddClient(String ipToSend, Int32 metric, String output)
+        {
+            RoutedItem receivedItem = new RoutedItem(ipToSend, metric, output);
 
             //Se nao tem o IP destino na lista do server - cadastra
-            if (!clientList.Any(x => x.Ip.Equals(item.Ip)))
+            if (!clientList.Any(x => x.IpToSend.Equals(receivedItem.IpToSend)))
             {
-                item.Metric = item.Metric + 1;
-                clientList.Add(item);
+                receivedItem.Metric = receivedItem.Metric + 1;
+                clientList.Add(receivedItem);
             }
-                //Se tem o IP destino
-            else if (clientList.Any(x => x.Ip.Equals(item.Ip)))
+            //Se tem o IP destino, entao confere a metrica e usa a menor
+            else if (clientList.Any(x => x.IpToSend.Equals(receivedItem.IpToSend)))
             {
-                //Existe o IP na tabela, entao confere a metrica e usa a menor
-                RoutedItem itemInList = clientList.Where(x => x.Ip.Equals(item.Ip)).FirstOrDefault();
+                //Item que existe na tabela local
+                RoutedItem itemInList = clientList.Where(x => x.IpToSend.Equals(receivedItem.IpToSend)).FirstOrDefault();
 
                 //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
                 //e ver de quem recebeu IP
-                if (item.Metric + 1 < itemInList.Metric && !item.Ip.Equals(Listener.serverIP.Address))
+                if (!receivedItem.IpToSend.Equals(itemInList.Output))
                 {
-                    itemInList.Metric = item.Metric + 1;
-                    itemInList.Output = item.Ip;
+                    itemInList.Metric = receivedItem.Metric + 1;
+                    //itemInList.Output = receivedItem.IpToSend;
                 }
-                else if (item.Metric.Equals(Int16.MaxValue) && !item.Ip.Equals(Listener.serverIP.Address))
+                else if (receivedItem.IpToSend.Equals(itemInList.Output) && (receivedItem.Metric.Equals(0) || receivedItem.Metric.Equals(Int16.MaxValue + 1) || receivedItem.Metric.Equals(Int16.MaxValue)))
                 {
-                    itemInList.Metric = Int16.MaxValue;
-                }
-                else if (item.Metric.Equals(Int16.MaxValue))
-                {
-                    itemInList.Metric = Int16.MaxValue;
+                    itemInList.Metric = receivedItem.Metric + 1;
                 }
             }
         }
 
         public void DisconnectServer(String ip)
         {
-            RoutedItem item = clientList.Where(x => x.Ip.Equals(IPAddress.Parse(ip))).FirstOrDefault();
+            //Desliga o Server colocando metrica MaxValue para ele
+            RoutedItem item = clientList.Where(x => x.IpToSend.Equals(IPAddress.Parse(ip))).FirstOrDefault();
             item.Metric = Int16.MaxValue;
         }
         
         internal void RestartServer(String ip)
         {
-            RoutedItem item = clientList.Where(x => x.Ip.Equals(IPAddress.Parse(ip))).FirstOrDefault();
+            //Reinicia o Server colocando metrica 0 para ele
+            RoutedItem item = clientList.Where(x => x.IpToSend.Equals(IPAddress.Parse(ip))).FirstOrDefault();
             item.Metric = 0;
         }
     }
