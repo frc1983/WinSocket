@@ -15,7 +15,7 @@ namespace UDP
     public partial class Form1 : Form
     {
         private bool isRunning { get; set; }
-        private int _sleep = 100;
+        private int _sleep = 10000;
 
         public Form1()
         {
@@ -23,6 +23,7 @@ namespace UDP
             startServer();
         }
 
+        //Envia as mensagens para cada item da lista de clientes
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             while (isRunning)
@@ -35,8 +36,7 @@ namespace UDP
                         Sender.Send(Listener.Serialize(Listener.RoutedItemList.clientList),
                             new IPEndPoint(
                                 IPAddress.Parse(Listener.RoutedItemList.clientList.ElementAt(i).IpToSend.ToString()),
-                                11000),
-                                Listener.RoutedItemList.clientList.ElementAt(i).Metric
+                                11000)
                         );
                     }
                     BeginInvoke(new Action(() => refreshGrid()));
@@ -44,6 +44,7 @@ namespace UDP
             }
         }
 
+        //Atualiza a grid de clients
         private void refreshGrid()
         {
             var bs = new BindingSource();
@@ -51,6 +52,7 @@ namespace UDP
             dtgClientes.DataSource = bs;
         }
 
+        //Inicia o servidor e inicia a thread que fica ouvindo mensagens
         private void startServer()
         {
             if (!backgroundWorker1.IsBusy)
@@ -64,19 +66,19 @@ namespace UDP
             Listener.RoutedItemList.AddClient(Listener.serverIP.Address.ToString(),-1, Listener.serverIP.Address.ToString(), true);
         }
 
+        //Desconecta o servidor
         private void btnKill_Click(object sender, EventArgs e)
         {
-            //isRunning = false;
             Listener.Close();
-            //backgroundWorker1.Dispose(); 
         }
 
+        //Reconecta o servidor
         private void btnRestartServer_Click(object sender, EventArgs e)
         {
-            //startServer();
             Listener.Restart();
         }
 
+        //Adiciona um client na lista local
         private void btnAddClient_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(txtClientIP.Text))

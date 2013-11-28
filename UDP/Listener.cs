@@ -12,9 +12,9 @@ namespace UDP
         private const int listenPort = 11000;
         public static UdpClient listener { get; set; }
         public static IPEndPoint serverIP { get; set; }
-        public static bool messageReceived = false;
         public static RoutedItemList RoutedItemList;
 
+        //Inicia o server e comeca a receber mensagens
         public static void Start()
         {
             RoutedItemList = new RoutedItemList();
@@ -25,7 +25,7 @@ namespace UDP
 
             try
             {
-                Console.WriteLine("Waiting for message");
+                Console.WriteLine("Ouvindo mensagens");
                 listener.BeginReceive(new AsyncCallback(ReceiveCallback), serverIP);
             }
             catch (Exception e)
@@ -34,6 +34,7 @@ namespace UDP
             }     
         }
 
+        //Recebe a mensagem
         public static void ReceiveCallback(IAsyncResult ar)
         {
             try {
@@ -56,6 +57,7 @@ namespace UDP
             }
         }
 
+        //Retorna o endereco IP do servidor para exibicao
         private static IPEndPoint getServerIpAddress()
         {
             IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
@@ -65,11 +67,12 @@ namespace UDP
             return EP;
         }
 
+        //Desconecta o servidor
         public static void Close(){
             RoutedItemList.DisconnectServer(Listener.serverIP.Address.ToString());
-            //listener.Close();
         }
 
+        //Serializa a os itens da lista de clientes para enviar
         internal static string Serialize(List<RoutedItem> list)
         {
             StringBuilder sb = new StringBuilder();
@@ -86,6 +89,7 @@ namespace UDP
             return sb.ToString();
         }
 
+        //Deserializa a mensagem e transforma em itens da lista de clientes
         internal static List<RoutedItem> Deserialize(string message)
         {
             List<RoutedItem> newList = new List<RoutedItem>();
@@ -103,6 +107,7 @@ namespace UDP
             return newList;
         }
 
+        //reinicia o servidor
         internal static void Restart()
         {
             RoutedItemList.RestartServer(Listener.serverIP.Address.ToString());

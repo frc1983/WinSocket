@@ -42,40 +42,45 @@ namespace UDP.Model
                 //Item que existe na tabela local
                 RoutedItem itemInList = clientList.Where(x => x.IpToSend.Equals(receivedItem.IpToSend)).FirstOrDefault();
 
-                //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
-                //e ver de quem recebeu IP
+                //Se o ip foi adicionado no server, atualiza a saida e a metrica
                 if (addedInServer)
                 {
                     itemInList.Metric = 1;
                     itemInList.Output = receivedItem.Output;
                 }
+                //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
+                //e ver de quem recebeu IP
                 else if (!receivedItem.IpToSend.Equals(itemInList.Output) && receivedItem.Metric + 1 < itemInList.Metric)
                 {
                     itemInList.Metric = receivedItem.Metric + 1;
                     itemInList.Output = receivedItem.IpToSend;
                 }
+                //Se a saida do item recebido for igual ao ip da lista e a metrica menor, atualiza a metrica e a saida
                 else if (receivedItem.Output.Equals(itemInList.IpToSend) && receivedItem.Metric + 1 < itemInList.Metric)
                 {
                     itemInList.Metric = receivedItem.Metric + 1;
                     itemInList.Output = receivedItem.Output;
                 }
-                else if (receivedItem.IpToSend.Equals(itemInList.Output) && (receivedItem.Metric.Equals(0) || receivedItem.Metric.Equals(Int16.MaxValue + 1) || receivedItem.Metric.Equals(Int16.MaxValue)))
+                //Se o IP recebido é igual a saida do item de mesmo IP no server e a metrica é zero(IP LOCAL) ou a metrica eh MAXVALUE(Server desligado) atualiza a metrica na tabela
+                else if (receivedItem.IpToSend.Equals(itemInList.Output) && 
+                    (receivedItem.Metric.Equals(0) || receivedItem.Metric.Equals(Int16.MaxValue + 1) || receivedItem.Metric.Equals(Int16.MaxValue)))
                 {
                     itemInList.Metric = receivedItem.Metric + 1;
                 }
             }
         }
 
+        //Desconecta o server setando MaxValue para o ip do server
         public void DisconnectServer(String ip)
         {
             //Desliga o Server colocando metrica MaxValue para ele
             RoutedItem item = clientList.Where(x => x.IpToSend.Equals(IPAddress.Parse(ip))).FirstOrDefault();
             item.Metric = Int16.MaxValue;
         }
-        
+
+        //Reconect o server setando 0 para o ip do server
         internal void RestartServer(String ip)
         {
-            //Reinicia o Server colocando metrica 0 para ele
             RoutedItem item = clientList.Where(x => x.IpToSend.Equals(IPAddress.Parse(ip))).FirstOrDefault();
             item.Metric = 0;
         }
