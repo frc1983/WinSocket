@@ -26,7 +26,7 @@ namespace UDP.Model
             }
         }
 
-        public void AddClient(String ipToSend, Int32 metric, String output)
+        public void AddClient(String ipToSend, Int32 metric, String output, bool addedInServer = false)
         {
             RoutedItem receivedItem = new RoutedItem(ipToSend, metric, output);
 
@@ -44,10 +44,20 @@ namespace UDP.Model
 
                 //Se a metrica do item que foi recebido é menor que o existente na tabela local, atualiza a tabela
                 //e ver de quem recebeu IP
-                if (!receivedItem.IpToSend.Equals(itemInList.Output))
+                if (addedInServer)
+                {
+                    itemInList.Metric = 1;
+                    itemInList.Output = receivedItem.Output;
+                }
+                else if (!receivedItem.IpToSend.Equals(itemInList.Output) && receivedItem.Metric + 1 < itemInList.Metric)
                 {
                     itemInList.Metric = receivedItem.Metric + 1;
-                    //itemInList.Output = receivedItem.IpToSend;
+                    itemInList.Output = receivedItem.IpToSend;
+                }
+                else if (receivedItem.Output.Equals(itemInList.IpToSend) && receivedItem.Metric + 1 < itemInList.Metric)
+                {
+                    itemInList.Metric = receivedItem.Metric + 1;
+                    itemInList.Output = receivedItem.Output;
                 }
                 else if (receivedItem.IpToSend.Equals(itemInList.Output) && (receivedItem.Metric.Equals(0) || receivedItem.Metric.Equals(Int16.MaxValue + 1) || receivedItem.Metric.Equals(Int16.MaxValue)))
                 {
